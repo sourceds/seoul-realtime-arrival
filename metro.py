@@ -75,12 +75,12 @@ class TrainInfo:
     def __str__(self) -> str:
         return f"{"[막차] " if self.is_last is True else ""}{self.destination}{"급행" if self.type!="일반" else "행"} {self.id}열차 {self.arrival}"
 
-#ArrivalInfo stores the arrival information for one station, one line.
+#MetroArrivalInfo stores the arrival information for one station, one line.
 # consists of 4 TrainInfo class variables
 @dataclass
-class ArrivalInfo:
+class MetroArrivalInfo:
     """
-    ArrivalInfo stores the arrival information of an individual line.
+    MetroArrivalInfo stores the arrival information of an individual line.
     Each attribute is of class TrainInfo.
     
     Attributes:
@@ -169,9 +169,9 @@ def get_metro_arrivals(api_key: str, station_name: str, store_data=False) -> dic
         # or else the API will raise error INFO-200.
 
     Returns:
-        A dictionary of arrival information, where each key-value pair is {str : ArrivalInfo} with 
-        the key being the line name and the value being an ArrivalInfo instance.
-        ArrivalInfo is a a dataclass with 4 attributes(inbound/outbound/express inbound/expreses outbound), each of type TrainInfo.
+        A dictionary of arrival information, where each key-value pair is {str : MetroArrivalInfo} with 
+        the key being the line name and the value being an TrainInfo instance.
+        MetroArrivalInfo is a a dataclass with 4 attributes(inbound/outbound/express inbound/expreses outbound), each of type TrainInfo.
         TrainInfo is a dataclass with 5 attributes, id, train_type, destination, arrival, is_last.
         
         You can print the return value simply by iterating over the dictionary and printing the value - 
@@ -231,14 +231,14 @@ def get_metro_arrivals(api_key: str, station_name: str, store_data=False) -> dic
     arrivals = data.get("realtimeArrivalList", [])
 
     arrival_data = {}
-    # dictionary structured as [str, ArrivalInfo]
-    # ArrivalInfo is an class that stores multiple instances of ArrivalInfo,
+    # dictionary structured as [str, MetroArrivalInfo]
+    # MetroArrivalInfo is an class that stores multiple instances of TrainInfo,
     # specifically 4 - inbound, outbound, inbound_express, outbound_express
     #
-    # metro_data is structured as a dictionary of string to ArrivalInfo pairs.
+    # metro_data is structured as a dictionary of string to TrainInfo pairs.
     #
-    # metro_data : "Line A" : ArrivalInfo (TrainInfo, TrainInfo, TrainInfo, TrainInfo)
-    #              "Line B" : ArrivalInfo (TrainInfo, TrainInfo, TrainInfo, TrainInfo)
+    # metro_data : "Line A" : MetroArrivalInfo (TrainInfo, TrainInfo, TrainInfo, TrainInfo)
+    #              "Line B" : MetroArrivalInfo (TrainInfo, TrainInfo, TrainInfo, TrainInfo)
     #              ...
 
     line_str = arrivals[0].get("subwayList", None)
@@ -254,9 +254,9 @@ def get_metro_arrivals(api_key: str, station_name: str, store_data=False) -> dic
             metro_line_str = metro_line_id_lookup.get(line, None)
             if metro_line_str is None:
                 raise TransitAPIError(f"Unknown subway line number.") 
-            arrival_data[metro_line_str] = ArrivalInfo()
-            # initialize dictionary with empty instances of ArrivalInfo.
-            # After this step, all ArrivalInfo classes instantiated will have None as the member values.
+            arrival_data[metro_line_str] = MetroArrivalInfo()
+            # initialize dictionary with empty instances of MetroArrivalInfo.
+            # After this step, all MetroArrivalInfo classes instantiated will have None as the member values.
 
     for entry in arrivals:
         line_id = entry.get("subwayId", None) #get current line as ID
