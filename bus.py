@@ -16,6 +16,8 @@ from dataclasses import dataclass
 
 BUS_BASE_URL = "http://ws.bus.go.kr/api/rest/arrive"
 
+bus_type_lookup = { '0' : '일반', '1' : '저상', '2' : '굴절' }
+
 # ---------------------------------------------------------------------------
 # Return types
 # ---------------------------------------------------------------------------
@@ -37,13 +39,16 @@ class BusInfo:
 
 @dataclass
 class BusArrivalInfo:
-    """Holds the next two arrival messages for a single direction/stop."""
-    first: BusInfo | None
-    second: BusInfo | None
+    """Holds the next two bus data for a single line & stop."""
+    arrival_1: BusInfo | None
+    arrival_2: BusInfo | None
 
     
     def __str__(self) -> str:
-        return f"첫 번째: {self.first} | 두 번째: {self.second}"
+        return_str = ""
+        if self.arrival_1 is not None: return_str += str(self.arrival_1) + '\n'
+        if self.arrival_2 is not None: return_str += str(self.arrival_2)
+        return return_str
 
 
 # ---------------------------------------------------------------------------
@@ -103,7 +108,7 @@ def get_bus_arrivals(api_key: str, station_id: str, route_id: str, store_data=Fa
         f"{BUS_BASE_URL}/getArrInfoByRouteAll"
         f"?ServiceKey={api_key}&busRouteId={route_id}&resultType=json"
     )
-    
+
     data = _get_json(url)
     
     if (store_data):

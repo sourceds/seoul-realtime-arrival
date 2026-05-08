@@ -8,7 +8,6 @@ Environment variables required:
 
 import json
 import os
-from dataclasses import dataclass
 
 import dotenv
 import requests
@@ -143,7 +142,7 @@ def _get_json(url: str) -> dict:
 
 
 def _save_json(data: dict, filename: str) -> None:
-    """Optionally write a raw API response to disk for debugging."""
+    """Write a raw API response to disk."""
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
