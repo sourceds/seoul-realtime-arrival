@@ -1,5 +1,5 @@
 """
-Seoul Metropolitan Subway Real-Time Arrival Checker
+Seoul Bus Real-Time Arrival Checker
 Fetches live arrival info from Seoul Open API for bus lines.
 
 Environment variables required:
@@ -80,7 +80,7 @@ def _save_json(data: dict, filename: str) -> None:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
-def get_bus_arrivals(api_key: str, station_id: str, route_id: str) -> ArrivalInfo:
+def get_bus_arrivals(api_key: str, station_id: str, route_id: str, store_data=False) -> BusArrivalInfo:
     """
     Fetch real-time bus arrival data for a specific stop on a route.
 
@@ -103,8 +103,11 @@ def get_bus_arrivals(api_key: str, station_id: str, route_id: str) -> ArrivalInf
         f"{BUS_BASE_URL}/getArrInfoByRouteAll"
         f"?ServiceKey={api_key}&busRouteId={route_id}&resultType=json"
     )
+    
     data = _get_json(url)
-    _save_json(data, "bus.json")
+    
+    if (store_data):
+        _save_json(data, "metro.json")
 
     header = data.get("msgHeader", {})
     if header.get("headerCd") != "0":

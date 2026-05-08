@@ -152,9 +152,6 @@ def _save_json(data: dict, filename: str) -> None:
 # Metro (subway)
 # ---------------------------------------------------------------------------
 
-#DEBUG ONLY
-from line_profiler import profile
-@profile
 def get_metro_arrivals(api_key: str, station_name: str, store_data=False) -> dict[str, list]:
     """
     Fetch real-time subway arrival data for a Seoul Metro station.
