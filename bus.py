@@ -26,7 +26,7 @@ bus_type_lookup = { '0' : '일반', '1' : '저상', '2' : '굴절' }
 class BusInfo:
     #Holds the arrival messages for a single bus/train.
     
-    current_station: str | None # 'stationNm?'
+    current_station: str | None # 'stationNm'
     bus_type : str | None #'busType' -> 0 일반, 1 저상, 2 굴절
     arrival: str | None # 'arrmsg'
     is_last : bool | None #'isLast' -> 1 is 막차
@@ -94,7 +94,7 @@ def _get_json(url: str) -> dict:
 
 
 def _save_json(data: dict, filename: str) -> None:
-    """Optionally write a raw API response to disk for debugging."""
+    """Optionally write a raw API response to disk"""
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
@@ -115,7 +115,7 @@ def get_bus_arrivals(api_key: str, station_id: str, route_id: str, store_data=Fa
     the user (bus API does not do a station name lookup)
 
     Returns:
-        A BusArrivalInfo with the next two bus arrival times.
+        A BusArrivalInfo with the next two bus arrival times, each of type BusInfo.
 
     Raises:
         TransitAPIError: on network failure, API error, or stop not found.
@@ -149,11 +149,11 @@ def get_bus_arrivals(api_key: str, station_id: str, route_id: str, store_data=Fa
     if matched_stop is None:
         raise TransitAPIError(f"Station ID '{station_id}' not found in route '{route_id}'.")
     else:
-        #arrival_1
         try:
             return_data.station_name = matched_stop['stNm']
             return_data.line_number = matched_stop['rtNm']
 
+            #arrival_1
             return_data.arrival_1 = BusInfo(
                 arrival=matched_stop['arrmsg1'],
                 is_last=True if matched_stop['isLast1'] =='1' else '0',
@@ -161,6 +161,7 @@ def get_bus_arrivals(api_key: str, station_id: str, route_id: str, store_data=Fa
                 current_station = matched_stop['stationNm1']
             )
 
+            #arrival_2
             return_data.arrival_2 = BusInfo(
                 arrival=matched_stop['arrmsg2'],
                 is_last=True if matched_stop['isLast2'] =='1' else '0',
