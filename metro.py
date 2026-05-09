@@ -8,7 +8,7 @@ Environment variables required:
 
 import json
 import os
-
+from dataclasses import dataclass
 import dotenv
 import requests
 
@@ -72,7 +72,14 @@ class TrainInfo:
         # every train has a unique train_id, so there is no need to hash other variables
     
     def __str__(self) -> str:
-        return f"{"[막차] " if self.is_last is True else ""}{self.destination}{"급행" if self.type!="일반" else "행"} {self.id}열차 {self.arrival}"
+        return_str = (
+                    f"{"[막차] " if self.is_last is True else ""}"
+                    f"{self.destination}"
+                    f"{"급행" if self.type!="일반" else "행"} "
+                    f"{self.id}열차 "
+                    f"{self.arrival}"
+        )
+        return return_str
 
 #MetroArrivalInfo stores the arrival information for one station, one line.
 # consists of 4 TrainInfo class variables
