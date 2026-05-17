@@ -57,6 +57,8 @@ class BusArrivalInfo:
     def __init__(self):
         self.arrival_1 = None
         self.arrival_2 = None
+        self.station_name = None
+        self.line_number = None
     
     def __str__(self) -> str:
         return_str = f"{self.station_name} {self.line_number}\n"
